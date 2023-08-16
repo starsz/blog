@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Apache APISIX 是是 Apache 软件基金会下的云原生 API 网关。APISIX 的实现基于 OpenResty， 在结构上主要可分为两层。底下一层是基于 OpenResty 定制的 apisix-base，顶上一层是采用 lua 实现的功能。  apisix-base: 是在 OpenResty 基础之上进行了定制化，扩展了 OpenResty 的功能，例如集成了 wasm-ng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在 macOS 上编译运行 Apache APISIX">
+<meta property="og:url" content="http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/index.html">
+<meta property="og:site_name" content="Starsz">
+<meta property="og:description" content="Apache APISIX 是是 Apache 软件基金会下的云原生 API 网关。APISIX 的实现基于 OpenResty， 在结构上主要可分为两层。底下一层是基于 OpenResty 定制的 apisix-base，顶上一层是采用 lua 实现的功能。  apisix-base: 是在 OpenResty 基础之上进行了定制化，扩展了 OpenResty 的功能，例如集成了 wasm-ng">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-08-03T12:30:09.000Z">
+<meta property="article:modified_time" content="2023-08-16T08:19:50.614Z">
+<meta property="article:author" content="Peter Zhu">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/25628854">
+        
+      
+      
+      
+    
+    <!-- title -->
+    <title>如何在 macOS 上编译运行 Apache APISIX</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&text=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&is_video=false&description=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=如何在 macOS 上编译运行 Apache APISIX&body=Check out this article: http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&name=如何在 macOS 上编译运行 Apache APISIX&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&t=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E8%84%9A%E6%9C%AC"><span class="toc-number">1.</span> <span class="toc-text">下载编译脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-apisix-base-%E4%BE%9D%E8%B5%96"><span class="toc-number">2.</span> <span class="toc-text">安装 apisix-base 依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91-apisix-base"><span class="toc-number">3.</span> <span class="toc-text">编译 apisix-base</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%B8%80%EF%BC%9A%E2%80%9Dnproc-command-not-found%E2%80%9D"><span class="toc-number">3.1.</span> <span class="toc-text">问题一：”nproc: command not found”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%BA%8C-%E2%80%9COpenSSL-library-not-found%E2%80%9D"><span class="toc-number">3.2.</span> <span class="toc-text">问题二: “OpenSSL library not found”</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4-apisix-base-%E7%BC%96%E8%AF%91%E6%88%90%E5%8A%9F"><span class="toc-number">4.</span> <span class="toc-text">确认 apisix-base 编译成功</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        如何在 macOS 上编译运行 Apache APISIX
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Peter Zhu</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2023-08-03T12:30:09.000Z" class="dt-published" itemprop="datePublished">2023-08-03</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <p><a target="_blank" rel="noopener" href="http://apisix.apache.org/">Apache APISIX</a> 是是 Apache 软件基金会下的云原生 API 网关。APISIX 的实现基于 OpenResty， 在结构上主要可分为两层。底下一层是基于 OpenResty 定制的 apisix-base，顶上一层是采用 lua 实现的功能。</p>
+<blockquote>
+<p>apisix-base: 是在 OpenResty 基础之上进行了定制化，扩展了 OpenResty 的功能，例如集成了 wasm-nginx-module， dubbo 以及国密证书 API 等。</p>
+</blockquote>
+<p>在实际根据官方文档：<a target="_blank" rel="noopener" href="https://apisix.apache.org/docs/apisix/next/building-apisix/">https://apisix.apache.org/docs/apisix/next/building-apisix/</a> 从源码运行 Apache APISIX 发现：<br>在 macOS 平台中，直接采用 “brew install openresty” 而非安装 apisix-base</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">install_dependencies_on_mac_osx</span></span>() &#123;</span><br><span class="line">    <span class="comment"># install OpenResty, etcd and some compilation tools</span></span><br><span class="line">    brew install openresty/brew/openresty luarocks lua@5.1 wget curl git pcre openldap</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>参考:<br><a target="_blank" rel="noopener" href="https://github.com/apache/apisix/blob/master/utils/install-dependencies.sh#L100-L103">https://github.com/apache/apisix/blob/master/utils/install-dependencies.sh#L100-L103</a> 在 centos 平台，则会安装 apisix-base</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">install_dependencies_with_yum</span></span>() &#123;</span><br><span class="line">    sudo yum install -y yum-utils</span><br><span class="line"></span><br><span class="line">    <span class="built_in">local</span> common_dep=<span class="string">&quot;curl wget git gcc openresty-openssl111-devel unzip pcre pcre-devel openldap-devel&quot;</span></span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">&quot;<span class="variable">$&#123;1&#125;</span>&quot;</span> == <span class="string">&quot;centos&quot;</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="comment"># add APISIX source</span></span><br><span class="line">        <span class="built_in">local</span> apisix_pkg=apache-apisix-repo-1.0-1.noarch</span><br><span class="line">        rpm -q --quiet <span class="variable">$&#123;apisix_pkg&#125;</span> || sudo yum install -y https://repos.apiseven.com/packages/centos/<span class="variable">$&#123;apisix_pkg&#125;</span>.rpm</span><br><span class="line"></span><br><span class="line">        <span class="comment"># install apisix-base and some compilation tools</span></span><br><span class="line">        <span class="comment"># shellcheck disable=SC2086</span></span><br><span class="line">        sudo yum install -y apisix-base <span class="variable">$common_dep</span></span><br></pre></td></tr></table></figure>
+
+<p>参考：<br><a target="_blank" rel="noopener" href="https://github.com/apache/apisix/blob/master/utils/install-dependencies.sh#L55-L62">https://github.com/apache/apisix/blob/master/utils/install-dependencies.sh#L55-L62</a> 因此，如果想要使用更全功能的 APISIX，例如国密，dubbo，wasm 等，则需要将底座从 OpenResty 更换为 apisix-base。本文将基于 API7 提供的 <a target="_blank" rel="noopener" href="https://github.com/api7/apisix-build-tools/blob/master/build-apisix-base.sh">build-apisix-base.sh</a> 介绍在 macOS 平台编译 apisix-base 遇到的问题以及解决方案。</p>
+<h2 id="下载编译脚本"><a href="#下载编译脚本" class="headerlink" title="下载编译脚本"></a>下载编译脚本</h2><p>在安装 apisix-base 依赖之前，我们需要先 clone 本次使用的 apisix-build-tools:</p>
+<blockquote>
+<p>API7 官方采用该 apisix-build-tools 构建 apisix, apisix-dashboard, apisix-base 项目的 rpm, deb, apk 包。 </p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/api7/apisix-build-tools.git</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装-apisix-base-依赖"><a href="#安装-apisix-base-依赖" class="headerlink" title="安装 apisix-base 依赖"></a>安装 apisix-base 依赖</h2><p>在编译 apisix-base 时，nginx 将依赖几个库，所以我们需要提前安装这部分依赖。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install pcre openresty-openssl111 zlib</span><br></pre></td></tr></table></figure>
+<p>另外 build-apisix-base.sh 中还会编译 <a target="_blank" rel="noopener" href="https://github.com/api7/Amesh">amesh</a>，为了确保 build-apisix-base.sh 能够完整执行，我们需要依赖 golang &gt;&#x3D; 1.18，如果没有的话可以通过如下命令安装 golang：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install go@1.18</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译-apisix-base"><a href="#编译-apisix-base" class="headerlink" title="编译 apisix-base"></a>编译 apisix-base</h2><p>完成依赖的安装之后，我们开始执行 “build-apisix-base.sh” </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash build-apisix-base.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="问题一：”nproc-command-not-found”"><a href="#问题一：”nproc-command-not-found”" class="headerlink" title="问题一：”nproc: command not found”"></a>问题一：”nproc: command not found”</h3><p>在运行过程中提示 “nproc: command not found”, nproc 的主要作用是为了获取机器当前的 cpu 数量。在 “build-apisix-bash.sh” 中会使用 <code>make -j</code>nproc&#96;&#96; 来加速整个编译的过程。</p>
+<blockquote>
+<p><strong>-j</strong> [<em>jobs</em>], <strong>–jobs</strong>[&#x3D;<em>jobs</em>]<br>Specifies the number of <em>jobs</em> (commands) to run simultaneously. If there is more than one <strong>-j</strong> option, the last one is effective. If the <strong>-j</strong> option is given without an argument, <em>make</em> will not limit the number of jobs that can run simultaneously.<br>关于 make -j 的内容可以参考链接：<a target="_blank" rel="noopener" href="https://linux.die.net/man/1/make">https://linux.die.net/man/1/make</a></p>
+</blockquote>
+<p>发现问题之后，我们可以通过如下两个方式来解决：</p>
+<p>方式一: 安装包含 nproc 的 coreutils 包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install coreutils</span><br></pre></td></tr></table></figure>
+
+<p>方式二: 将 nproc 命令采用其他命令代替</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">alias</span> <span class="built_in">nproc</span>=<span class="string">&quot;sysctl -n hw.logicalcpu&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="问题二-“OpenSSL-library-not-found”"><a href="#问题二-“OpenSSL-library-not-found”" class="headerlink" title="问题二: “OpenSSL library not found”"></a>问题二: “OpenSSL library not found”</h3><p>修复之后，重新运行 build-apisix-base.sh 之后提示</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">checking <span class="keyword">for</span> OpenSSL library ... not found</span><br><span class="line">checking <span class="keyword">for</span> OpenSSL library <span class="keyword">in</span> /usr/local/ ... not found</span><br><span class="line">checking <span class="keyword">for</span> OpenSSL library <span class="keyword">in</span> /usr/pkg/ ... not found</span><br><span class="line">checking <span class="keyword">for</span> OpenSSL library <span class="keyword">in</span> /opt/local/ ... not found</span><br></pre></td></tr></table></figure>
+
+<p>发现编译的过程中编译器只在 “&#x2F;usr&#x2F;local&#x2F;“, “&#x2F;usr&#x2F;pkg”, “&#x2F;opt&#x2F;local&#x2F;“ 目录中查找 OpenSSL 库，<br>关于为什么按照这个顺序查找 OpenSSL library，我也找到了对应的源码，</p>
+<p>参考：<a target="_blank" rel="noopener" href="https://github.com/nginx/nginx/blob/master/auto/lib/openssl/conf#L69C9-L121">https://github.com/nginx/nginx/blob/master/auto/lib/openssl/conf#L69C9-L121</a></p>
+<p>而我们通过 brew 安装的 OpenSSL 目录地址可以通过 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew info openresty-openssl111</span><br></pre></td></tr></table></figure>
+
+<p>发现在 “&#x2F;opt&#x2F;homebrew&#x2F;Cellar&#x2F;openresty-openssl111&#x2F;1.1.1n_1” 目录，因此我们需要指定 OpenSSL library 的地址。好在 “build-apisix-tools.sh” 提供了 “<a target="_blank" rel="noopener" href="https://github.com/api7/apisix-build-tools/blob/master/build-apisix-base.sh#L106">cc_opt</a>“ 和 “<a target="_blank" rel="noopener" href="https://github.com/api7/apisix-build-tools/blob/master/build-apisix-base.sh#L107">ld_opt</a>“ 两个编译和链接选项，因此我们只需要在这两个选项中指定 OpenSSL 库地址即可。结合笔者在 macOS 平台使用的编译工具文档 (通过执行  cc -help ) 发现：通过 -I 选项可以指定 Include 目录的搜索路径，-L 选项可以指定 library 的查找路径。因此，通过如下预先设置如下环境变量即可 (设置环境变量之前可以通过 brew info 预先检查路径是否准确）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> openssl_prefix=/opt/homebrew/Cellar/openresty-openssl111/1.1.1n_1</span><br><span class="line"><span class="built_in">export</span> cc_opt=<span class="string">&quot;-I<span class="variable">$&#123;openssl_prefix&#125;</span>/include&quot;</span></span><br><span class="line"><span class="built_in">export</span> ld_opt=<span class="string">&quot;-L<span class="variable">$&#123;openssl_prefix&#125;</span>/lib&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>之后我们再次运行，成功编译 apisix-base。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash build-apisix-base.sh</span><br></pre></td></tr></table></figure>
+
+<h2 id="确认-apisix-base-编译成功"><a href="#确认-apisix-base-编译成功" class="headerlink" title="确认 apisix-base 编译成功"></a>确认 apisix-base 编译成功</h2><p>执行 “build-apisix-base.sh” 脚本成功之后，我们可以通过如下命令来确认是否成功编译 apisix-base 首先将 “&#x2F;usr&#x2F;local&#x2F;openresty&#x2F;bin&#x2F;openresty” 软链到 “&#x2F;usr&#x2F;local&#x2F;bin” 目录下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">ln</span> -s /usr/local/openresty/bin/openresty /usr/local/bin/openresty</span><br></pre></td></tr></table></figure>
+
+<p>然后执行如下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openresty -V 2&gt;&amp;1  | grep apisix</span><br></pre></td></tr></table></figure>
+
+<p>如果能够看到有结果输出，则表明当前 openresty 二进制文件已经是由 apisx-build-tools 编译产生，否则表明 openresty 仍然是官方下载的预编译二进制。</p>
+<p>或者通过运行 APISIX，根据官方文档使用 <a target="_blank" rel="noopener" href="https://apisix.apache.org/zh/docs/apisix/2.15/plugins/dubbo-proxy/">dubbo-proxy </a>验证功能是否正常。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/memkind/memkind/issues/33">https://github.com/memkind/memkind/issues/33</a></li>
+<li><a target="_blank" rel="noopener" href="https://mkyong.com/mac/where-does-homebrew-install-packages-on-mac/">https://mkyong.com/mac/where-does-homebrew-install-packages-on-mac/</a></li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/">Home</a></li>
+        
+          <li><a href="/about/">About</a></li>
+        
+          <li><a href="/archives/">Writing</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E7%BC%96%E8%AF%91%E8%84%9A%E6%9C%AC"><span class="toc-number">1.</span> <span class="toc-text">下载编译脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-apisix-base-%E4%BE%9D%E8%B5%96"><span class="toc-number">2.</span> <span class="toc-text">安装 apisix-base 依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91-apisix-base"><span class="toc-number">3.</span> <span class="toc-text">编译 apisix-base</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%B8%80%EF%BC%9A%E2%80%9Dnproc-command-not-found%E2%80%9D"><span class="toc-number">3.1.</span> <span class="toc-text">问题一：”nproc: command not found”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%BA%8C-%E2%80%9COpenSSL-library-not-found%E2%80%9D"><span class="toc-number">3.2.</span> <span class="toc-text">问题二: “OpenSSL library not found”</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4-apisix-base-%E7%BC%96%E8%AF%91%E6%88%90%E5%8A%9F"><span class="toc-number">4.</span> <span class="toc-text">确认 apisix-base 编译成功</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&text=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&is_video=false&description=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=如何在 macOS 上编译运行 Apache APISIX&body=Check out this article: http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&title=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&name=如何在 macOS 上编译运行 Apache APISIX&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=http://example.com/2023/08/03/how_to_deploy_apisix_on_mac_os/&t=如何在 macOS 上编译运行 Apache APISIX"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2023
+    Peter Zhu
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/">Home</a></li><!--
+     --><!--
+       --><li><a href="/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/archives/">Writing</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
